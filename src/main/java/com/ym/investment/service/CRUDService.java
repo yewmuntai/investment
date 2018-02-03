@@ -37,7 +37,7 @@ public abstract class CRUDService<T1, T2> {
 	}
 
 	public T1 get(Long id) {
-		return getRepository().getOne(id);
+		return getRepository().findOne(id);
 	}
 	
 	public T1 create(T2 source) {

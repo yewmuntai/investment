@@ -28,8 +28,6 @@ public class CustomerAssembler {
 		dto.setEmail(source.getEmail());
 		dto.setMobile(source.getMobile());
 		dto.setSecuritiesNum(source.getSecuritiesNum());
-		dto.setRiskTolerance(source.getRiskTolerance());
-		dto.setReturnPreference(source.getReturnPreference());
 		dto.setCreated(source.getCreated().getTime());
 		dto.setUpdated(source.getUpdated() == null ? null : source.getUpdated().getTime());
 		return dto;
@@ -42,8 +40,6 @@ public class CustomerAssembler {
 		dto.setEmail(source.getEmail());
 		dto.setMobile(source.getMobile());
 		dto.setSecuritiesNum(source.getSecuritiesNum());
-		dto.setRiskTolerance(source.getRiskTolerance());
-		dto.setReturnPreference(source.getReturnPreference());
 		return dto;
 	}
 

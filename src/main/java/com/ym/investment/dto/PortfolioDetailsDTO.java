@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CustomerDetailsDTO {
+public class PortfolioDetailsDTO {
 	private long id;
 
 	private String name;
-	private String email;
-	private String securitiesNum;
-	private String mobile;
+	private int riskTolerance;
+	private int returnPreference;
+	private long owner;
 }

@@ -1,5 +1,7 @@
 package com.ym.investment.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +12,11 @@ import com.ym.investment.repository.InvestmentRepository;
 @Service
 public class InvestmentService extends CRUDService<Investment, InvestmentDetailsDTO>{
 	@Autowired
-	private InvestmentRepository InvestmentRepository;
+	private InvestmentRepository investmentRepository;
 	
 	@Override
 	InvestmentRepository getRepository() {
-		return InvestmentRepository;
+		return investmentRepository;
 	}
 
 	@Override
@@ -30,8 +32,12 @@ public class InvestmentService extends CRUDService<Investment, InvestmentDetails
 	}
 	
 	public void setRepository(InvestmentRepository repo) {
-		if (InvestmentRepository == null) {
-			InvestmentRepository = repo;
+		if (investmentRepository == null) {
+			investmentRepository = repo;
 		}
+	}
+	
+	public List<Investment> recommend(int riskScore, int returnScore) {
+		return investmentRepository.findByRiskScoreOrReturnScore(riskScore, returnScore);
 	}
 }

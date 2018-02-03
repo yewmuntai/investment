@@ -23,8 +23,6 @@ public class CustomerService extends CRUDService<Customer, CustomerDetailsDTO>{
 		customer.setMobile(source.getMobile());
 		customer.setSecuritiesNum(source.getSecuritiesNum());
 		customer.setEmail(source.getEmail());
-		customer.setRiskTolerance(source.getRiskTolerance());
-		customer.setReturnPreference(source.getReturnPreference());
 	}
 
 	@Override
