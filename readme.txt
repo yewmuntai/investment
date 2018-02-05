@@ -99,3 +99,6 @@ PUT http://localhost:8080/api/portfolio/{id}
 
 Delete a portfolio
 DELETE http://localhost:8080/api/portfolio/{id}
+
+Get investment recommendations for portfolio
+http://localhost:8080/api/portfolio/1/recommend
