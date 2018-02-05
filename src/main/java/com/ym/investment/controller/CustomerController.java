@@ -1,6 +1,7 @@
 package com.ym.investment.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,7 +32,13 @@ public class CustomerController extends CRUDController<Customer, CustomerDetails
 	}
 
 	@Override
-	CustomerDetailsDTO toDetailsDTO(Customer source) {
-		return CustomerAssembler.toCustomerDetailsDTO(source);
+	CustomerDetailsDTO toDetailsDTO(Customer source, Map<String, String> params) {
+		CustomerDetailsDTO dto = CustomerAssembler.toCustomerDetailsDTO(source);
+		
+		if (params != null && params.containsKey("includePortfolio")) {
+			CustomerAssembler.insertPortfolio(dto, params.containsKey("includeRecommendations"));
+		}
+		
+		return dto;
 	}
 }

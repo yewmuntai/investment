@@ -1,6 +1,7 @@
 package com.ym.investment.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,8 +42,14 @@ public class PortfolioController extends CRUDController<Portfolio, PortfolioDeta
 	}
 
 	@Override
-	PortfolioDetailsDTO toDetailsDTO(Portfolio source) {
-		return PortfolioAssembler.toPortfolioDetailsDTO(source);
+	PortfolioDetailsDTO toDetailsDTO(Portfolio source, Map<String, String> params) {
+		PortfolioDetailsDTO dto = PortfolioAssembler.toPortfolioDetailsDTO(source);
+		
+		if (params != null && params.containsKey("includeRecommendations")) {
+			PortfolioAssembler.insertRecommendations(dto);
+		}
+
+		return dto;
 	}
 	
 	@GetMapping("/{id}/recommend")

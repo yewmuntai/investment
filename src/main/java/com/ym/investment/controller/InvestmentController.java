@@ -1,6 +1,7 @@
 package com.ym.investment.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,7 +32,7 @@ public class InvestmentController extends CRUDController<Investment, InvestmentD
 	}
 
 	@Override
-	InvestmentDetailsDTO toDetailsDTO(Investment source) {
+	InvestmentDetailsDTO toDetailsDTO(Investment source, Map<String, String> params) {
 		return InvestmentAssembler.toInvestmentDetailsDTO(source);
 	}
 }

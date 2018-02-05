@@ -1,6 +1,7 @@
 package com.ym.investment.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ public class PortfolioService extends CRUDService<Portfolio, PortfolioDetailsDTO
 	private PortfolioRepository portfolioRepository;
 	@Autowired
 	private CustomerService customerService;
+	@Autowired
+	private InvestmentService investmentService;
 	
 	@Override
 	PortfolioRepository getRepository() {
@@ -43,9 +46,18 @@ public class PortfolioService extends CRUDService<Portfolio, PortfolioDetailsDTO
 	}
 	
 	@Override
-	List<Portfolio> getListByParent(long parentId) {
-		Customer owner = customerService.get(parentId);
-		return portfolioRepository.findByOwner(owner);
+	List<Portfolio> getList(Map<String, String> params) {
+		List<Portfolio> list = null;
+		
+		try {
+			long parentId = Long.parseLong(params.get("parent"));
+			Customer owner = customerService.get(parentId);
+			list = portfolioRepository.findByOwner(owner);
+		}catch (Exception e) {
+			list = getRepository().findAll();
+		}
+
+		return list;
 	}
 	
 	public void setRepository(PortfolioRepository repo) {

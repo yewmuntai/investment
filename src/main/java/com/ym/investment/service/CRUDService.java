@@ -1,7 +1,7 @@
 package com.ym.investment.service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -14,8 +14,8 @@ public abstract class CRUDService<T1, T2> {
 	abstract Class<T1> getT1Class();
 	abstract void setDomainValues(T1 obj, T2 source);
 	
-	List<T1> getListByParent(long parentId) {
-		throw new NotFoundException("Find by parent not implemented");
+	List<T1> getList(Map<String, String> params) {
+		return getRepository().findAll();
 	}
 	
 	T1 createObj() {
@@ -26,13 +26,8 @@ public abstract class CRUDService<T1, T2> {
 		}
 	}
 
-	public List<T1> list(Optional<Long> parentId) {
-		List<T1> list = null;
-		if (parentId.isPresent()) {
-			list = getListByParent(parentId.get());
-		}else {
-			list = getRepository().findAll();
-		}
+	public List<T1> list(Map<String, String> params) {
+		List<T1> list = getList(params);
 		return list;
 	}
 
