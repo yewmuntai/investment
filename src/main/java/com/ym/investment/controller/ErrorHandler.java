@@ -23,6 +23,7 @@ public class ErrorHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorDTO> exception(Exception e) {
+		e.printStackTrace();
 		return new ResponseEntity<>(makeDTO(e), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	

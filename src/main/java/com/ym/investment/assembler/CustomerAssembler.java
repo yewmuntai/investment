@@ -27,13 +27,13 @@ public class CustomerAssembler {
 
 	public static CustomerListDTO toCustomerListDTO(List<Customer> source) {
 		List<CustomerListDetailsDTO> list = source.stream().map(investment -> 
-		toCustomerListDetailsDTO(investment)
-	).collect(Collectors.toList());
-
-	CustomerListDTO dto = new CustomerListDTO();
-	dto.setList(list);
-
-	return dto;
+			toCustomerListDetailsDTO(investment)
+		).collect(Collectors.toList());
+	
+		CustomerListDTO dto = new CustomerListDTO();
+		dto.setList(list);
+	
+		return dto;
 	}
 
 	public static CustomerListDetailsDTO toCustomerListDetailsDTO(Customer source) {
@@ -61,7 +61,6 @@ public class CustomerAssembler {
 	public static void insertPortfolio(CustomerDetailsDTO dto, boolean includeRecommendations) {
 		Map<String, String> params = new HashMap<>();
 		params.put("parent", dto.getId() + "");
-		System.out.println(portfolioService);
 		List<Portfolio> portfolios = portfolioService.list(params);
 		
 		List<PortfolioDetailsDTO> pDTOs = portfolios.stream().map(portfolio -> {

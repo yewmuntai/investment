@@ -18,8 +18,6 @@ public class PortfolioService extends CRUDService<Portfolio, PortfolioDetailsDTO
 	private PortfolioRepository portfolioRepository;
 	@Autowired
 	private CustomerService customerService;
-	@Autowired
-	private InvestmentService investmentService;
 	
 	@Override
 	PortfolioRepository getRepository() {
@@ -60,9 +58,15 @@ public class PortfolioService extends CRUDService<Portfolio, PortfolioDetailsDTO
 		return list;
 	}
 	
-	public void setRepository(PortfolioRepository repo) {
+	void setRepository(PortfolioRepository repo) {
 		if (portfolioRepository == null) {
 			portfolioRepository = repo;
+		}
+	}
+	
+	void setCustomerService(CustomerService service) {
+		if (this.customerService == null) {
+			customerService = service;
 		}
 	}
 }

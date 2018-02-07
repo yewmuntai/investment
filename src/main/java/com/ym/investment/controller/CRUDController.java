@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ym.investment.domain.BaseDomain;
 import com.ym.investment.service.CRUDService;
 
-public abstract class CRUDController<T1, T2, T3> {
+public abstract class CRUDController<T1 extends BaseDomain, T2, T3> {
 	abstract CRUDService<T1, T2> getService();
 	abstract T3 toListDTO(List<T1> source);
 	abstract T2 toDetailsDTO(T1 source, Map<String, String> params);

@@ -12,13 +12,13 @@ public class InvestmentAssembler {
 
 	public static InvestmentListDTO toInvestmentListDTO(List<Investment> source) {
 		List<InvestmentListDetailsDTO> list = source.stream().map(investment -> 
-		toInvestmentListDetailsDTO(investment)
-	).collect(Collectors.toList());
+			toInvestmentListDetailsDTO(investment)
+		).collect(Collectors.toList());
 	
-	InvestmentListDTO dto = new InvestmentListDTO();
-	dto.setList(list);
+		InvestmentListDTO dto = new InvestmentListDTO();
+		dto.setList(list);
 
-	return dto;
+		return dto;
 	}
 
 	public static InvestmentListDetailsDTO toInvestmentListDetailsDTO(Investment source) {

@@ -31,7 +31,7 @@ public class InvestmentService extends CRUDService<Investment, InvestmentDetails
 		return Investment.class;
 	}
 	
-	public void setRepository(InvestmentRepository repo) {
+	void setRepository(InvestmentRepository repo) {
 		if (investmentRepository == null) {
 			investmentRepository = repo;
 		}
