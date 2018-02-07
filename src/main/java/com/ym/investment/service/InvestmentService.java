@@ -1,6 +1,7 @@
 package com.ym.investment.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,10 @@ import com.ym.investment.dto.InvestmentDetailsDTO;
 import com.ym.investment.domain.Investment;
 import com.ym.investment.repository.InvestmentRepository;
 
+/**
+ * CRUD service for investment
+ *
+ */
 @Service
 public class InvestmentService extends CRUDService<Investment, InvestmentDetailsDTO>{
 	@Autowired
@@ -20,7 +25,7 @@ public class InvestmentService extends CRUDService<Investment, InvestmentDetails
 	}
 
 	@Override
-	void setDomainValues(Investment investment, InvestmentDetailsDTO source) {
+	void setDomainValues(Investment investment, InvestmentDetailsDTO source, Map<String, String> params) {
 		investment.setName(source.getName());
 		investment.setReturnScore(source.getReturnScore());
 		investment.setRiskScore(source.getRiskScore());
@@ -31,13 +36,25 @@ public class InvestmentService extends CRUDService<Investment, InvestmentDetails
 		return Investment.class;
 	}
 	
+	/**
+	 * For unit test
+	 * @param repo InvestmentRepository
+	 */
 	void setRepository(InvestmentRepository repo) {
 		if (investmentRepository == null) {
 			investmentRepository = repo;
 		}
 	}
-	
-	public List<Investment> recommend(int riskScore, int returnScore) {
-		return investmentRepository.findByRiskScoreOrReturnScore(riskScore, returnScore);
+
+	/**
+	 * To provide a list of recommended investment based on risk tolerance and return preference.
+	 * The risk tolerance will be matched to the risk score of the investment and the return reference will be matched to the return score.
+	 * 
+	 * @param riskTolerance
+	 * @param returnPreference
+	 * @return List of Investments that matches.
+	 */
+	public List<Investment> recommend(int riskTolerance, int returnPreference) {
+		return investmentRepository.findByRiskScoreOrReturnScore(riskTolerance, returnPreference);
 	}
 }

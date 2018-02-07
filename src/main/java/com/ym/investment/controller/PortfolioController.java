@@ -35,10 +35,19 @@ public class PortfolioController extends CRUDController<Portfolio, PortfolioDeta
 	}
 
 	@Override
-	PortfolioListDTO toListDTO(List<Portfolio> source) {
+	PortfolioListDTO toListDTO(List<Portfolio> source, Map<String, String> params) {
 		return PortfolioAssembler.toPortfolioListDTO(source);
 	}
 
+	/**
+	 * Convert Portfolio domain entitiy to PortfolioDetailsDTO
+	 * 
+	 * @param source The Portfolio entity retrieved
+	 * @param params parameters from the http call. May contain the following param:
+	 * includeRecommendations - if this is present, recommendations data will be included in the portfolio data
+	 * 
+	 * @return PortfolioDetailsDTO
+	 */
 	@Override
 	PortfolioDetailsDTO toDetailsDTO(Portfolio source, Map<String, String> params) {
 		PortfolioDetailsDTO dto = PortfolioAssembler.toPortfolioDetailsDTO(source);
@@ -49,7 +58,13 @@ public class PortfolioController extends CRUDController<Portfolio, PortfolioDeta
 
 		return dto;
 	}
-	
+
+	/**
+	 * Get a list of recommended investments for this portfolio.
+	 * 
+	 * @param id The ID for the portfolio. This is a path variable.
+	 * @return InvestmentListDTO
+	 */
 	@GetMapping("/{id}/recommend")
 	public ResponseEntity<InvestmentListDTO> recommend(@PathVariable("id") long id) {
 		Portfolio portfolio = portfolioService.get(id);

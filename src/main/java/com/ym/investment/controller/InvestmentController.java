@@ -25,7 +25,7 @@ public class InvestmentController extends CRUDController<Investment, InvestmentD
 	}
 
 	@Override
-	InvestmentListDTO toListDTO(List<Investment> source) {
+	InvestmentListDTO toListDTO(List<Investment> source, Map<String, String> params) {
 		return InvestmentAssembler.toInvestmentListDTO(source);
 	}
 
