@@ -54,7 +54,7 @@ public class CustomerServiceTest {
 	@Test
 	public void getSuccess() {
 		Customer test = testList.values().iterator().next();
-		Customer obj = customerService.get(test.getId());
+		Customer obj = customerService.get(test.getId(), null);
 		
 		assertNotNull(obj);
 		assertEquals(obj.getName(), test.getName());
@@ -67,7 +67,7 @@ public class CustomerServiceTest {
 	
 	@Test
 	public void getNonExist() {
-		Customer obj = customerService.get(10001l);
+		Customer obj = customerService.get(10001l, null);
 		assertNull(obj);
 	}
 
@@ -75,7 +75,7 @@ public class CustomerServiceTest {
 	public void createSuccess() {
 
 		CustomerDetailsDTO source = makeDTO();
-		Customer created = customerService.create(source);
+		Customer created = customerService.create(source, null);
 
 		assertNotNull(created);
 		assertTrue(created.getId() > 0);
@@ -100,7 +100,7 @@ public class CustomerServiceTest {
 		dto.setMobile("Mobile " + num);
 		dto.setEmail("email"+num+"@email.com");
 		dto.setSecuritiesNum("securities " + num);
-		Customer updated = customerService.update(test.getId(), dto);
+		Customer updated = customerService.update(test.getId(), dto, null);
 		assertNotNull(updated);
 		assertEquals(updated.getId(), test.getId());
 
@@ -120,7 +120,7 @@ public class CustomerServiceTest {
 		dto.setName("Customer " + num);
 
 		try {
-			customerService.update(10001l, dto);
+			customerService.update(10001l, dto, null);
 			assertTrue(false);
 		}catch (NotFoundException e) {
 			assertTrue(true);
@@ -133,7 +133,7 @@ public class CustomerServiceTest {
 	public void deleteSuccess() {
 		Customer test = testList.values().iterator().next();
 
-		customerService.delete(test.getId());
+		customerService.delete(test.getId(), null);
 
 		Customer deleted = customerRepository.findOne(test.getId());
 		assertNull(deleted);

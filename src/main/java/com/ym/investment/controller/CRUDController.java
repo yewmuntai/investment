@@ -76,7 +76,7 @@ public abstract class CRUDController<T1 extends BaseDomain, T2, T3> {
 	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<T2> get(@PathVariable("id") Long id, @RequestParam Map<String, String> params) {
-		T1 obj = getService().get(id);
+		T1 obj = getService().get(id, params);
 		T2 dto = toDetailsDTO(obj, params);
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
@@ -90,7 +90,7 @@ public abstract class CRUDController<T1 extends BaseDomain, T2, T3> {
 	 */
 	@PostMapping
 	public ResponseEntity<T2> create(@RequestBody T2 dto, @RequestParam Map<String, String> params) {
-		T1 obj = getService().create(dto);
+		T1 obj = getService().create(dto, params);
 		T2 result = toDetailsDTO(obj, params);
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}
@@ -104,9 +104,9 @@ public abstract class CRUDController<T1 extends BaseDomain, T2, T3> {
 	 * @return The ResponseEntity that contains the details DTO of the domain updated
 	 */
 	@PutMapping("/{id}")
-	public ResponseEntity<T2> update(@PathVariable("id") Long id, @RequestBody T2 dto) {
-		T1 obj = getService().update(id, dto);
-		T2 result = toDetailsDTO(obj, null);
+	public ResponseEntity<T2> update(@PathVariable("id") Long id, @RequestBody T2 dto, @RequestParam Map<String, String> params) {
+		T1 obj = getService().update(id, dto, params);
+		T2 result = toDetailsDTO(obj, params);
 		return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
 	}
 	
@@ -116,9 +116,9 @@ public abstract class CRUDController<T1 extends BaseDomain, T2, T3> {
 	 * @param id of the domain object to be deleted. This is a path variable
 	 */
 	@DeleteMapping("/{id}")
-	public ResponseEntity<T2> delete(@PathVariable("id") Long id) {
-		T1 obj = getService().delete(id);
-		T2 result = toDetailsDTO(obj, null);
+	public ResponseEntity<T2> delete(@PathVariable("id") Long id, @RequestParam Map<String, String> params) {
+		T1 obj = getService().delete(id, params);
+		T2 result = toDetailsDTO(obj, params);
 		
 		return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
 	}

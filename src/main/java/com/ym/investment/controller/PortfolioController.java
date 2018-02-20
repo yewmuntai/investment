@@ -67,7 +67,7 @@ public class PortfolioController extends CRUDController<Portfolio, PortfolioDeta
 	 */
 	@GetMapping("/{id}/recommend")
 	public ResponseEntity<InvestmentListDTO> recommend(@PathVariable("id") long id) {
-		Portfolio portfolio = portfolioService.get(id);
+		Portfolio portfolio = portfolioService.get(id, null);
 		List<Investment> list = investmentService.recommend(portfolio.getRiskTolerance(), portfolio.getReturnPreference());
 		InvestmentListDTO dto = InvestmentAssembler.toInvestmentListDTO(list);
 		return new ResponseEntity<>(dto, HttpStatus.OK);

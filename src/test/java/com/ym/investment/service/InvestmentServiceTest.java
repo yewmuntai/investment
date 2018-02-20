@@ -64,7 +64,7 @@ public class InvestmentServiceTest {
 	@Test
 	public void getSuccess() {
 		Investment test = testList.values().iterator().next();
-		Investment obj = investmentService.get(test.getId());
+		Investment obj = investmentService.get(test.getId(), null);
 		
 		assertNotNull(obj);
 		assertEquals(obj.getName(), test.getName());
@@ -76,7 +76,7 @@ public class InvestmentServiceTest {
 	
 	@Test
 	public void getNonExist() {
-		Investment obj = investmentService.get(10001l);
+		Investment obj = investmentService.get(10001l, null);
 		assertNull(obj);
 	}
 
@@ -84,7 +84,7 @@ public class InvestmentServiceTest {
 	public void createSuccess() {
 
 		InvestmentDetailsDTO source = makeDTO();
-		Investment created = investmentService.create(source);
+		Investment created = investmentService.create(source, null);
 
 		assertNotNull(created);
 		assertTrue(created.getId() > 0);
@@ -108,7 +108,7 @@ public class InvestmentServiceTest {
 		dto.setReturnScore((int)(Math.random() * 10));
 		dto.setRiskScore((int)(Math.random() * 10));
 
-		Investment updated = investmentService.update(test.getId(), dto);
+		Investment updated = investmentService.update(test.getId(), dto, null);
 
 		assertNotNull(updated);
 		assertEquals(updated.getId(), test.getId());
@@ -128,7 +128,7 @@ public class InvestmentServiceTest {
 		dto.setName("Investment " + num);
 
 		try {
-			investmentService.update(10001l, dto);
+			investmentService.update(10001l, dto, null);
 			assertTrue(false);
 		}catch (NotFoundException e) {
 			assertTrue(true);
@@ -141,7 +141,7 @@ public class InvestmentServiceTest {
 	public void deleteSuccess() {
 		Investment test = testList.values().iterator().next();
 
-		investmentService.delete(test.getId());
+		investmentService.delete(test.getId(), null);
 
 		Investment deleted = investmentRepository.findOne(test.getId());
 		assertNull(deleted);

@@ -48,8 +48,8 @@ public class PortfolioServiceTest {
 		customer.setSecuritiesNum("11111");
 		customer = customerRepository.save(customer);
 
-		when(customerService.get(10001l)).thenReturn(null);	
-		when(customerService.get(customer.getId())).thenReturn(customer);	
+		when(customerService.get(10001l, null)).thenReturn(null);	
+		when(customerService.get(customer.getId(), null)).thenReturn(customer);	
 
 		for (int i=0; i<3; i++) {
 			Portfolio obj = makeObj();
@@ -73,7 +73,7 @@ public class PortfolioServiceTest {
 	@Test
 	public void getSuccess() {
 		Portfolio test = testList.values().iterator().next();
-		Portfolio obj = portfolioService.get(test.getId());
+		Portfolio obj = portfolioService.get(test.getId(), null);
 		
 		assertNotNull(obj);
 		assertEquals(obj.getName(), test.getName());
@@ -85,7 +85,7 @@ public class PortfolioServiceTest {
 	
 	@Test
 	public void getNonExist() {
-		Portfolio obj = portfolioService.get(10001l);
+		Portfolio obj = portfolioService.get(10001l, null);
 		assertNull(obj);
 	}
 
@@ -93,7 +93,7 @@ public class PortfolioServiceTest {
 	public void createSuccess() {
 
 		PortfolioDetailsDTO source = makeDTO();
-		Portfolio created = portfolioService.create(source);
+		Portfolio created = portfolioService.create(source, null);
 
 		assertNotNull(created);
 		assertTrue(created.getId() > 0);
@@ -113,7 +113,7 @@ public class PortfolioServiceTest {
 		source.setOwner(10001l);
 		
 		try {
-			portfolioService.create(source);
+			portfolioService.create(source, null);
 			assertTrue(false);
 		}catch (InvestmentException e) {
 			assertEquals(e.getMessage(), "Invalid owner");
@@ -134,7 +134,7 @@ public class PortfolioServiceTest {
 		dto.setRiskTolerance((int)(Math.random() * 10));
 		dto.setOwner(customer.getId());
 
-		Portfolio updated = portfolioService.update(test.getId(), dto);
+		Portfolio updated = portfolioService.update(test.getId(), dto, null);
 
 		assertNotNull(updated);
 		assertEquals(updated.getId(), test.getId());
@@ -154,7 +154,7 @@ public class PortfolioServiceTest {
 		dto.setName("Portfolio " + num);
 
 		try {
-			portfolioService.update(10001l, dto);
+			portfolioService.update(10001l, dto, null);
 			assertTrue(false);
 		}catch (NotFoundException e) {
 			assertTrue(true);
@@ -176,7 +176,7 @@ public class PortfolioServiceTest {
 		dto.setOwner(10001l);
 
 		try {
-			portfolioService.update(test.getId(), dto);
+			portfolioService.update(test.getId(), dto, null);
 			assertTrue(false);
 		}catch (InvestmentException e) {
 			assertEquals(e.getMessage(), "Invalid owner");
@@ -190,7 +190,7 @@ public class PortfolioServiceTest {
 	public void deleteSuccess() {
 		Portfolio test = testList.values().iterator().next();
 
-		portfolioService.delete(test.getId());
+		portfolioService.delete(test.getId(), null);
 
 		Portfolio deleted = portfolioRepository.findOne(test.getId());
 		assertNull(deleted);
