@@ -30,6 +30,8 @@ public class CustomerAssemblerTest {
 	List<Portfolio> pList = new ArrayList<>();
 	List<Investment> iList = new ArrayList<>();
 
+	CustomerAssembler customerAssembler = new CustomerAssembler();
+
 	@Before
 	public void init() {
 		testInstance1 = makeObj(true);
@@ -37,8 +39,8 @@ public class CustomerAssemblerTest {
 		testInstance3 = makeObj(false);
 
 		PortfolioService service = mock(PortfolioService.class);
-		CustomerAssembler ca = new CustomerAssembler();
-		ca.setPortfolioService(service);
+
+		customerAssembler.setPortfolioService(service);
 
 		Portfolio p1 = makePortfolio();
 		Portfolio p2 = makePortfolio();
@@ -56,6 +58,9 @@ public class CustomerAssemblerTest {
 		InvestmentService iService = mock(InvestmentService.class);
 		PortfolioAssembler pa = new PortfolioAssembler();
 		pa.setInvestmentService(iService);
+		InvestmentAssembler ia = new InvestmentAssembler();
+		pa.setInvestmentAssembler(ia);
+		customerAssembler.setPortfolioAssembler(pa);
 		when(iService.recommend(anyInt(),  anyInt())).thenReturn(iList);
 	}
 
@@ -100,7 +105,7 @@ public class CustomerAssemblerTest {
 
 	@Test
 	public void toCustomerDetails() {
-		CustomerDetailsDTO dto = CustomerAssembler.toCustomerDetailsDTO(testInstance1);
+		CustomerDetailsDTO dto = customerAssembler.toDetailsDTO(testInstance1);
 		
 		assertNotNull(dto);
 		assertEquals(dto.getId(), testInstance1.getId());
@@ -113,7 +118,7 @@ public class CustomerAssemblerTest {
 
 	@Test
 	public void toCustomerListDetailsWithUpdateDate() {
-		CustomerListDetailsDTO dto = CustomerAssembler.toCustomerListDetailsDTO(testInstance1);
+		CustomerListDetailsDTO dto = customerAssembler.toListDetailsDTO(testInstance1);
 		
 		assertNotNull(dto);
 		assertEquals(dto.getId(), testInstance1.getId());
@@ -127,7 +132,7 @@ public class CustomerAssemblerTest {
 	
 	@Test
 	public void toCustomerListDetailsWithoutUpdateDate() {
-		CustomerListDetailsDTO dto = CustomerAssembler.toCustomerListDetailsDTO(testInstance3);
+		CustomerListDetailsDTO dto = customerAssembler.toListDetailsDTO(testInstance3);
 		
 		assertNotNull(dto);
 		assertEquals(dto.getId(), testInstance3.getId());
@@ -146,7 +151,7 @@ public class CustomerAssemblerTest {
 		testList.add(testInstance2);
 		testList.add(testInstance3);
 		
-		CustomerListDTO dto = CustomerAssembler.toCustomerListDTO(testList);
+		CustomerListDTO dto = customerAssembler.toListDTO(testList);
 		assertNotNull(dto);
 		List<CustomerListDetailsDTO> dtos = dto.getList();
 		assertNotNull(dtos);
@@ -165,7 +170,7 @@ public class CustomerAssemblerTest {
 		long id = (long)(Math.random() * 1000);
 		dto.setId(id);
 
-		CustomerAssembler.insertPortfolio(dto, false);
+		customerAssembler.insertPortfolio(dto, false);
 		List<PortfolioDetailsDTO> portfolios = dto.getPortfolios();
 		assertNotNull(portfolios);
 		assertEquals(portfolios.size(), pList.size());
@@ -187,7 +192,7 @@ public class CustomerAssemblerTest {
 		long id = (long)(Math.random() * 1000);
 		dto.setId(id);
 
-		CustomerAssembler.insertPortfolio(dto, true);
+		customerAssembler.insertPortfolio(dto, true);
 		List<PortfolioDetailsDTO> portfolios = dto.getPortfolios();
 		assertNotNull(portfolios);
 		assertEquals(portfolios.size(), pList.size());

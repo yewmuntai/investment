@@ -3,6 +3,7 @@ package com.ym.investment.assembler;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ym.investment.service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,26 +16,13 @@ import com.ym.investment.dto.PortfolioListDetailsDTO;
 import com.ym.investment.service.InvestmentService;
 
 @Component
-public class PortfolioAssembler {
-	private static InvestmentService investmentService;
-	
+public class PortfolioAssembler extends Assembler<Portfolio, PortfolioDetailsDTO, PortfolioListDTO, PortfolioListDetailsDTO> {
 	@Autowired
-	public void setInvestmentService(InvestmentService investmentService) {
-		PortfolioAssembler.investmentService = investmentService;
-	}
-
-	public static PortfolioListDTO toPortfolioListDTO(List<Portfolio> source) {
-		List<PortfolioListDetailsDTO> list = source.stream().map(portfolio -> 
-			toPortfolioListDetailsDTO(portfolio)
-		).collect(Collectors.toList());
+	private InvestmentService investmentService;
+	@Autowired
+	private InvestmentAssembler investmentAssembler;
 	
-		PortfolioListDTO dto = new PortfolioListDTO();
-		dto.setList(list);
-
-		return dto;
-	}
-
-	public static PortfolioListDetailsDTO toPortfolioListDetailsDTO(Portfolio source) {
+	public PortfolioListDetailsDTO toListDetailsDTO(Portfolio source) {
 		PortfolioListDetailsDTO dto = new PortfolioListDetailsDTO();
 		dto.setId(source.getId());
 		dto.setName(source.getName());
@@ -46,7 +34,7 @@ public class PortfolioAssembler {
 		return dto;
 	}
 
-	public static PortfolioDetailsDTO toPortfolioDetailsDTO(Portfolio source) {
+	public PortfolioDetailsDTO toDetailsDTO(Portfolio source) {
 		PortfolioDetailsDTO dto = new PortfolioDetailsDTO();
 		dto.setId(source.getId());
 		dto.setName(source.getName());
@@ -56,12 +44,35 @@ public class PortfolioAssembler {
 		return dto;
 	}
 
-	public static void insertRecommendations(PortfolioDetailsDTO dto) {
+	@Override
+	public PortfolioListDTO newListDTO() {
+		return new PortfolioListDTO();
+	}
+
+	public void insertRecommendations(PortfolioDetailsDTO dto) {
 		List<Investment> list = investmentService.recommend(dto.getRiskTolerance(), dto.getReturnPreference());
 		List<InvestmentDetailsDTO> recommendations = list.stream().map(investment ->
-			InvestmentAssembler.toInvestmentDetailsDTO(investment)
+			investmentAssembler.toDetailsDTO(investment)
 		).collect(Collectors.toList());
 
 		dto.setRecommendations(recommendations);
+	}
+
+	/**
+	 * This is for unit test.
+	 *
+	 * @param investmentService investmentService
+	 */
+	public void setInvestmentService(InvestmentService investmentService) {
+		this.investmentService = investmentService;
+	}
+
+	/**
+	 * This is for unit test.
+	 *
+	 * @param investmentAssembler InvestmentAssembler
+	 */
+	public void setInvestmentAssembler(InvestmentAssembler investmentAssembler) {
+		this.investmentAssembler = investmentAssembler;
 	}
 }

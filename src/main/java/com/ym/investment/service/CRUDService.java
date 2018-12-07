@@ -51,7 +51,7 @@ public abstract class CRUDService<T1 extends BaseDomain, T2> {
 	/**
 	 * Create an instance of T1
 	 * 
-	 * @param params from the http call. This is not used in this default implementation.
+	 * @param param from the http call. This is not used in this default implementation.
 	 * @return T1
 	 */
 	T1 createObj(Map<String, String> param) {

@@ -1,8 +1,6 @@
 package com.ym.investment.controller;
 
-import java.util.List;
-import java.util.Map;
-
+import com.ym.investment.dto.InvestmentListDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,9 +13,11 @@ import com.ym.investment.service.InvestmentService;
 
 @RestController
 @RequestMapping("/api/investment")
-public class InvestmentController extends CRUDController<Investment, InvestmentDetailsDTO, InvestmentListDTO> {
+public class InvestmentController extends CRUDController<Investment, InvestmentDetailsDTO, InvestmentListDTO, InvestmentListDetailsDTO> {
 	@Autowired
 	private InvestmentService investmentService;
+	@Autowired
+	private InvestmentAssembler investmentAssembler;
 	
 	@Override
 	InvestmentService getService() {
@@ -25,12 +25,8 @@ public class InvestmentController extends CRUDController<Investment, InvestmentD
 	}
 
 	@Override
-	InvestmentListDTO toListDTO(List<Investment> source, Map<String, String> params) {
-		return InvestmentAssembler.toInvestmentListDTO(source);
+	InvestmentAssembler getAssembler() {
+		return investmentAssembler;
 	}
 
-	@Override
-	InvestmentDetailsDTO toDetailsDTO(Investment source, Map<String, String> params) {
-		return InvestmentAssembler.toInvestmentDetailsDTO(source);
-	}
 }

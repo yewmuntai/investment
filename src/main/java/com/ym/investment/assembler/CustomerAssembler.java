@@ -17,26 +17,13 @@ import com.ym.investment.dto.PortfolioDetailsDTO;
 import com.ym.investment.service.PortfolioService;
 
 @Component
-public class CustomerAssembler {
-	private static PortfolioService portfolioService;
-
+public class CustomerAssembler extends Assembler<Customer, CustomerDetailsDTO, CustomerListDTO, CustomerListDetailsDTO> {
 	@Autowired
-	public void setPortfolioService(PortfolioService portfolioService) {
-		CustomerAssembler.portfolioService = portfolioService;
-	}
+	private PortfolioService portfolioService;
+	@Autowired
+	private PortfolioAssembler portfolioAssembler;
 
-	public static CustomerListDTO toCustomerListDTO(List<Customer> source) {
-		List<CustomerListDetailsDTO> list = source.stream().map(investment -> 
-			toCustomerListDetailsDTO(investment)
-		).collect(Collectors.toList());
-	
-		CustomerListDTO dto = new CustomerListDTO();
-		dto.setList(list);
-	
-		return dto;
-	}
-
-	public static CustomerListDetailsDTO toCustomerListDetailsDTO(Customer source) {
+	public CustomerListDetailsDTO toListDetailsDTO(Customer source) {
 		CustomerListDetailsDTO dto = new CustomerListDetailsDTO();
 		dto.setId(source.getId());
 		dto.setName(source.getName());
@@ -48,7 +35,7 @@ public class CustomerAssembler {
 		return dto;
 	}
 
-	public static CustomerDetailsDTO toCustomerDetailsDTO(Customer source) {
+	public CustomerDetailsDTO toDetailsDTO(Customer source) {
 		CustomerDetailsDTO dto = new CustomerDetailsDTO();
 		dto.setId(source.getId());
 		dto.setName(source.getName());
@@ -58,20 +45,43 @@ public class CustomerAssembler {
 		return dto;
 	}
 
-	public static void insertPortfolio(CustomerDetailsDTO dto, boolean includeRecommendations) {
+	@Override
+	public CustomerListDTO newListDTO() {
+		return new CustomerListDTO();
+	}
+
+	public void insertPortfolio(CustomerDetailsDTO dto, boolean includeRecommendations) {
 		Map<String, String> params = new HashMap<>();
 		params.put("parent", dto.getId() + "");
 		List<Portfolio> portfolios = portfolioService.list(params);
 		
 		List<PortfolioDetailsDTO> pDTOs = portfolios.stream().map(portfolio -> {
-			PortfolioDetailsDTO pDTO = PortfolioAssembler.toPortfolioDetailsDTO(portfolio);
+			PortfolioDetailsDTO pDTO = portfolioAssembler.toDetailsDTO(portfolio);
 			
 			if (includeRecommendations) {
-				PortfolioAssembler.insertRecommendations(pDTO);
+				portfolioAssembler.insertRecommendations(pDTO);
 			}
 			
 			return pDTO;
 		}).collect(Collectors.toList()); 
 		dto.setPortfolios(pDTOs);
+	}
+
+	/**
+	 * This is for unit test.
+	 *
+	 * @param portfolioService PortfolioService
+	 */
+	public void setPortfolioService(PortfolioService portfolioService) {
+		this.portfolioService = portfolioService;
+	}
+
+	/**
+	 * This is for unit test.
+	 *
+	 * @param portfolioAssembler portfolioAssembler
+	 */
+	public void setPortfolioAssembler(PortfolioAssembler portfolioAssembler) {
+		this.portfolioAssembler = portfolioAssembler;
 	}
 }

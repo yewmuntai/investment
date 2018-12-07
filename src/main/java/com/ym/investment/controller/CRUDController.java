@@ -3,6 +3,8 @@ package com.ym.investment.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.ym.investment.assembler.Assembler;
+import com.ym.investment.dto.ListDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,7 +29,7 @@ import com.ym.investment.service.CRUDService;
  * @param <T2> The DTO for details
  * @param <T3> The DTO for list
  */
-public abstract class CRUDController<T1 extends BaseDomain, T2, T3> {
+public abstract class CRUDController<T1 extends BaseDomain, T2, T3 extends ListDTO<T4>, T4> {
 
 	/**
 	 * Controllers that extend from CRUDController needs to provide the CRUDService
@@ -37,13 +39,22 @@ public abstract class CRUDController<T1 extends BaseDomain, T2, T3> {
 	abstract CRUDService<T1, T2> getService();
 
 	/**
+	 * Controllers that extend from CRUDController needs to provide the Assembler
+	 *
+	 * @return Assember that what works with T1, T2, T3, T4
+	 */
+	abstract Assembler<T1, T2, T3, T4> getAssembler();
+
+	/**
 	 * Implementation for converting a list of T1 into the T3 dto
 	 * 
 	 * @param source List of T1. This is taken from the CRUDService list method
 	 * @param params from the http call
 	 * @return T3 DTO for list action
 	 */
-	abstract T3 toListDTO(List<T1> source, Map<String, String> params);
+	T3 toListDTO(List<T1> source, Map<String, String> params) {
+		return getAssembler().toListDTO(source);
+	}
 
 	/**
 	 * Implementation for converting a domain object into a T2 DTO.
@@ -52,8 +63,24 @@ public abstract class CRUDController<T1 extends BaseDomain, T2, T3> {
 	 * @param params from the http call
 	 * @return
 	 */
-	abstract T2 toDetailsDTO(T1 source, Map<String, String> params);
-	
+	T2 toDetailsDTO(T1 source, Map<String, String> params) {
+		T2 dto = getAssembler().toDetailsDTO(source);
+		processDetailsDTOChildren(dto, params);
+
+		return dto;
+	}
+
+	/**
+	 * populate child dto. default do nothing.
+	 * @param dto
+	 * @param params parameters from the http call. May contain the following 2 params:
+	 * includePortfolio - if this is present, portfolio data will be included in the response
+	 * includeRecommendations - if this is present, recommendations data will be included in the portfolio data
+	 */
+	void processDetailsDTOChildren(T2 dto, Map<String, String> params) {
+
+	}
+
 	/**
 	 * The end point for list
 	 * 
@@ -91,6 +118,7 @@ public abstract class CRUDController<T1 extends BaseDomain, T2, T3> {
 	@PostMapping
 	public ResponseEntity<T2> create(@RequestBody T2 dto, @RequestParam Map<String, String> params) {
 		T1 obj = getService().create(dto, params);
+		System.out.println(obj);
 		T2 result = toDetailsDTO(obj, params);
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}

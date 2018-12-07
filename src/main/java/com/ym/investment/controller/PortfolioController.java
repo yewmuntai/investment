@@ -3,6 +3,8 @@ package com.ym.investment.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.ym.investment.assembler.Assembler;
+import com.ym.investment.dto.PortfolioListDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,40 +25,39 @@ import com.ym.investment.service.PortfolioService;
 
 @RestController
 @RequestMapping("/api/portfolio")
-public class PortfolioController extends CRUDController<Portfolio, PortfolioDetailsDTO, PortfolioListDTO> {
+public class PortfolioController extends CRUDController<Portfolio, PortfolioDetailsDTO, PortfolioListDTO, PortfolioListDetailsDTO> {
 	@Autowired
 	private PortfolioService portfolioService;
 	@Autowired
 	private InvestmentService investmentService;
-	
+	@Autowired
+	private PortfolioAssembler portfolioAssembler;
+	@Autowired
+	private InvestmentAssembler investmentAssembler;
+
 	@Override
 	PortfolioService getService() {
 		return portfolioService;
 	}
 
 	@Override
-	PortfolioListDTO toListDTO(List<Portfolio> source, Map<String, String> params) {
-		return PortfolioAssembler.toPortfolioListDTO(source);
+	PortfolioAssembler getAssembler() {
+		return portfolioAssembler;
 	}
 
 	/**
-	 * Convert Portfolio domain entitiy to PortfolioDetailsDTO
-	 * 
-	 * @param source The Portfolio entity retrieved
-	 * @param params parameters from the http call. May contain the following param:
+	 * populate recommendation dto.
+	 *
+	 * @param dto
+	 * @param params parameters from the http call. May contain the following 2 params:
+	 * includePortfolio - if this is present, portfolio data will be included in the response
 	 * includeRecommendations - if this is present, recommendations data will be included in the portfolio data
-	 * 
-	 * @return PortfolioDetailsDTO
 	 */
 	@Override
-	PortfolioDetailsDTO toDetailsDTO(Portfolio source, Map<String, String> params) {
-		PortfolioDetailsDTO dto = PortfolioAssembler.toPortfolioDetailsDTO(source);
-		
+	void processDetailsDTOChildren(PortfolioDetailsDTO dto, Map<String, String> params) {
 		if (params != null && params.containsKey("includeRecommendations")) {
-			PortfolioAssembler.insertRecommendations(dto);
+			portfolioAssembler.insertRecommendations(dto);
 		}
-
-		return dto;
 	}
 
 	/**
@@ -69,7 +70,7 @@ public class PortfolioController extends CRUDController<Portfolio, PortfolioDeta
 	public ResponseEntity<InvestmentListDTO> recommend(@PathVariable("id") long id) {
 		Portfolio portfolio = portfolioService.get(id, null);
 		List<Investment> list = investmentService.recommend(portfolio.getRiskTolerance(), portfolio.getReturnPreference());
-		InvestmentListDTO dto = InvestmentAssembler.toInvestmentListDTO(list);
+		InvestmentListDTO dto = investmentAssembler.toListDTO(list);
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 }

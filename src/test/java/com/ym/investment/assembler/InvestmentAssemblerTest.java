@@ -19,6 +19,8 @@ public class InvestmentAssemblerTest {
 	private Investment testInstance2;
 	private Investment testInstance3;
 
+	private InvestmentAssembler investmentAssembler = new InvestmentAssembler();
+
 	@Before
 	public void init() {
 		testInstance1 = makeObj(true);
@@ -42,7 +44,7 @@ public class InvestmentAssemblerTest {
 
 	@Test
 	public void toInvestmentDetails() {
-		InvestmentDetailsDTO dto = InvestmentAssembler.toInvestmentDetailsDTO(testInstance1);
+		InvestmentDetailsDTO dto = investmentAssembler.toDetailsDTO(testInstance1);
 		
 		assertNotNull(dto);
 		assertEquals(dto.getId(), testInstance1.getId());
@@ -53,7 +55,7 @@ public class InvestmentAssemblerTest {
 
 	@Test
 	public void toInvestmentListDetailsWithUpdateDate() {
-		InvestmentListDetailsDTO dto = InvestmentAssembler.toInvestmentListDetailsDTO(testInstance1);
+		InvestmentListDetailsDTO dto = investmentAssembler.toListDetailsDTO(testInstance1);
 		
 		assertNotNull(dto);
 		assertEquals(dto.getId(), testInstance1.getId());
@@ -66,7 +68,7 @@ public class InvestmentAssemblerTest {
 	
 	@Test
 	public void toInvestmentListDetailsWithoutUpdateDate() {
-		InvestmentListDetailsDTO dto = InvestmentAssembler.toInvestmentListDetailsDTO(testInstance3);
+		InvestmentListDetailsDTO dto = investmentAssembler.toListDetailsDTO(testInstance3);
 		
 		assertNotNull(dto);
 		assertEquals(dto.getId(), testInstance3.getId());
@@ -84,7 +86,7 @@ public class InvestmentAssemblerTest {
 		testList.add(testInstance2);
 		testList.add(testInstance3);
 		
-		InvestmentListDTO dto = InvestmentAssembler.toInvestmentListDTO(testList);
+		InvestmentListDTO dto = investmentAssembler.toListDTO(testList);
 		assertNotNull(dto);
 		List<InvestmentListDetailsDTO> dtos = dto.getList();
 		assertNotNull(dtos);

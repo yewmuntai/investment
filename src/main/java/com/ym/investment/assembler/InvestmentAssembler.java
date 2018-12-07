@@ -1,27 +1,15 @@
 package com.ym.investment.assembler;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.ym.investment.domain.Investment;
 import com.ym.investment.dto.InvestmentDetailsDTO;
 import com.ym.investment.dto.InvestmentListDTO;
 import com.ym.investment.dto.InvestmentListDetailsDTO;
+import org.springframework.stereotype.Component;
 
-public class InvestmentAssembler {
+@Component
+public class InvestmentAssembler extends Assembler<Investment, InvestmentDetailsDTO, InvestmentListDTO, InvestmentListDetailsDTO> {
 
-	public static InvestmentListDTO toInvestmentListDTO(List<Investment> source) {
-		List<InvestmentListDetailsDTO> list = source.stream().map(investment -> 
-			toInvestmentListDetailsDTO(investment)
-		).collect(Collectors.toList());
-	
-		InvestmentListDTO dto = new InvestmentListDTO();
-		dto.setList(list);
-
-		return dto;
-	}
-
-	public static InvestmentListDetailsDTO toInvestmentListDetailsDTO(Investment source) {
+	public InvestmentListDetailsDTO toListDetailsDTO(Investment source) {
 		InvestmentListDetailsDTO dto = new InvestmentListDetailsDTO();
 		dto.setId(source.getId());
 		dto.setName(source.getName());
@@ -32,7 +20,7 @@ public class InvestmentAssembler {
 		return dto;
 	}
 
-	public static InvestmentDetailsDTO toInvestmentDetailsDTO(Investment source) {
+	public InvestmentDetailsDTO toDetailsDTO(Investment source) {
 		InvestmentDetailsDTO dto = new InvestmentDetailsDTO();
 		dto.setId(source.getId());
 		dto.setName(source.getName());
@@ -41,4 +29,8 @@ public class InvestmentAssembler {
 		return dto;
 	}
 
+	@Override
+	public InvestmentListDTO newListDTO() {
+		return new InvestmentListDTO();
+	}
 }

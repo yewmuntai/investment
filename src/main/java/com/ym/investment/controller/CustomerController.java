@@ -3,6 +3,7 @@ package com.ym.investment.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.ym.investment.dto.CustomerListDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,9 +19,11 @@ import com.ym.investment.service.CustomerService;
  */
 @RestController
 @RequestMapping("/api/customer")
-public class CustomerController extends CRUDController<Customer, CustomerDetailsDTO, CustomerListDTO> {
+public class CustomerController extends CRUDController<Customer, CustomerDetailsDTO, CustomerListDTO, CustomerListDetailsDTO> {
 	@Autowired
 	private CustomerService classService;
+	@Autowired
+	private CustomerAssembler customerAssembler;
 	
 	@Override
 	CustomerService getService() {
@@ -28,28 +31,22 @@ public class CustomerController extends CRUDController<Customer, CustomerDetails
 	}
 
 	@Override
-	CustomerListDTO toListDTO(List<Customer> source, Map<String, String> params) {
-		return CustomerAssembler.toCustomerListDTO(source);
+	CustomerAssembler getAssembler() {
+		return customerAssembler;
 	}
 
 	/**
-	 * Convert Customer domain entity to CustomerDetailsDTO
-	 * 
-	 * @param source The Customer entity retrieved
+	 * populate portfolio dto.
+	 *
+	 * @param dto
 	 * @param params parameters from the http call. May contain the following 2 params:
 	 * includePortfolio - if this is present, portfolio data will be included in the response
 	 * includeRecommendations - if this is present, recommendations data will be included in the portfolio data
-	 * 
-	 * @return CustomerDetailsDTO
 	 */
 	@Override
-	CustomerDetailsDTO toDetailsDTO(Customer source, Map<String, String> params) {
-		CustomerDetailsDTO dto = CustomerAssembler.toCustomerDetailsDTO(source);
-		
+	void processDetailsDTOChildren(CustomerDetailsDTO dto, Map<String, String> params) {
 		if (params != null && params.containsKey("includePortfolio")) {
-			CustomerAssembler.insertPortfolio(dto, params.containsKey("includeRecommendations"));
+			customerAssembler.insertPortfolio(dto, params.containsKey("includeRecommendations"));
 		}
-		
-		return dto;
 	}
 }

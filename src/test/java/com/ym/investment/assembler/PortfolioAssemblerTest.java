@@ -29,6 +29,8 @@ public class PortfolioAssemblerTest {
 	List<Portfolio> pList = new ArrayList<>();
 	List<Investment> iList = new ArrayList<>();
 
+	PortfolioAssembler portfolioAssembler = new PortfolioAssembler();
+
 	@Before
 	public void init() {
 		customer = makeCustomer();
@@ -38,8 +40,9 @@ public class PortfolioAssemblerTest {
 		testInstance3 = makeObj(false);
 
 		InvestmentService iService = mock(InvestmentService.class);
-		PortfolioAssembler pa = new PortfolioAssembler();
-		pa.setInvestmentService(iService);
+		portfolioAssembler.setInvestmentService(iService);
+		InvestmentAssembler ia = new InvestmentAssembler();
+		portfolioAssembler.setInvestmentAssembler(ia);
 
 		Investment i1 = makeInvestment();
 		Investment i2 = makeInvestment();
@@ -89,7 +92,7 @@ public class PortfolioAssemblerTest {
 
 	@Test
 	public void toPortfolioDetails() {
-		PortfolioDetailsDTO dto = PortfolioAssembler.toPortfolioDetailsDTO(testInstance1);
+		PortfolioDetailsDTO dto = portfolioAssembler.toDetailsDTO(testInstance1);
 		
 		assertNotNull(dto);
 		assertEquals(dto.getId(), testInstance1.getId());
@@ -102,7 +105,7 @@ public class PortfolioAssemblerTest {
 
 	@Test
 	public void toPortfolioListDetailsWithUpdateDate() {
-		PortfolioListDetailsDTO dto = PortfolioAssembler.toPortfolioListDetailsDTO(testInstance1);
+		PortfolioListDetailsDTO dto = portfolioAssembler.toListDetailsDTO(testInstance1);
 		
 		assertNotNull(dto);
 		assertEquals(dto.getId(), testInstance1.getId());
@@ -116,7 +119,7 @@ public class PortfolioAssemblerTest {
 	
 	@Test
 	public void toPortfolioListDetailsWithoutUpdateDate() {
-		PortfolioListDetailsDTO dto = PortfolioAssembler.toPortfolioListDetailsDTO(testInstance3);
+		PortfolioListDetailsDTO dto = portfolioAssembler.toListDetailsDTO(testInstance3);
 		
 		assertNotNull(dto);
 		assertEquals(dto.getId(), testInstance3.getId());
@@ -135,7 +138,7 @@ public class PortfolioAssemblerTest {
 		testList.add(testInstance2);
 		testList.add(testInstance3);
 		
-		PortfolioListDTO dto = PortfolioAssembler.toPortfolioListDTO(testList);
+		PortfolioListDTO dto = portfolioAssembler.toListDTO(testList);
 		assertNotNull(dto);
 		List<PortfolioListDetailsDTO> dtos = dto.getList();
 		assertNotNull(dtos);
@@ -154,7 +157,7 @@ public class PortfolioAssemblerTest {
 		long id = (long)(Math.random() * 1000);
 		dto.setId(id);
 
-		PortfolioAssembler.insertRecommendations(dto);
+		portfolioAssembler.insertRecommendations(dto);
 		List<InvestmentDetailsDTO> recommendations = dto.getRecommendations();
 
 		assertNotNull(recommendations);
